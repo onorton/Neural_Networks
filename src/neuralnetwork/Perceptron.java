@@ -2,7 +2,11 @@ package neuralnetwork;
 
 import java.util.Random;
 import java.lang.Math;
-
+/**
+ * 
+ * Class for perception neuron
+ *
+ */
 public class Perceptron implements Neuron {
 
 	private double[] weights;
@@ -12,7 +16,21 @@ public class Perceptron implements Neuron {
 	private int[][] data;
 	private Random r = new Random();
 	
-	
+	 
+	 // NB: Overload constructor when reading from hidden layer
+	 /** 
+	 * Constructor for Perceptron 
+	 * 
+	 * @param inputs The number of inputs to the perceptron.
+	 * 
+	 * @param threshold The threshold for the perceptron.
+	 * 
+	 * @param minV Minimum value for weights.
+	 * 
+	 * @param maxV Maximum value for weights.
+	 * 
+	 * @param data The data that is to be trained on.
+	 */
 	public Perceptron(int inputs, double threshold, 
 			          double minV, double maxV, int[][] data) {
 
@@ -28,6 +46,10 @@ public class Perceptron implements Neuron {
 		
 	}
 	
+	/**
+	 * Prints the weights for the perception.
+	 * 
+	 */
 	@Override
 	public void getWeights() {
 		for (int i = 0; i < weights.length; i++) {
@@ -36,7 +58,17 @@ public class Perceptron implements Neuron {
 		
 	}
 
-	
+	/**
+	 * 
+	 * Calculates the output for a particular set of inputs.
+	 * 
+	 * @param input
+	 * The set of inputs.
+	 * 
+	 * @return
+	 * The value of the output
+	 */
+	@Override
 	public int getOutput(int[] input) {
 		double sum = 0;
 		for (int i = 0; i < weights.length; i++) {
@@ -47,6 +79,15 @@ public class Perceptron implements Neuron {
 		return (step(sum - threshold));
 	}
 	
+	
+	/**
+	 * Calculates a value under the step function.
+	 * 
+	 * @param val The value to apply step function to.
+	 * 
+	 * @return
+	 * Value after the step function is applied.
+	 */
 	private int step(double val) {
 		if (val >= 0) {
 			return 1;
@@ -56,6 +97,11 @@ public class Perceptron implements Neuron {
 	}
 
 	
+	/**
+	 * Trains the particular neuron.
+	 * 
+	 * @param learningR The learning rate of the network.
+	 */
 	public void train(double learningR) {
 		boolean error = true;
 		while (error) {
@@ -77,6 +123,24 @@ public class Perceptron implements Neuron {
 		}
 	}
 	
+	/**
+	 * Calculates the change of the current weight. 
+	 * 
+	 * @param i
+	 * The index for the particular input-output combination.
+	 *  
+	 * @param j
+	 * The index for the particular weight.
+	 * 
+	 * @param e
+	 * The error of the output.
+	 * 
+	 * @param learningR
+	 * The learning rate of the network.
+	 * 
+	 * @return
+	 * The value of the change to be applied to the weight.
+	 */
 	private double delta(int i, int j, int e, double learningR) {
 		return learningR * data[i][j] * e;
 	}
