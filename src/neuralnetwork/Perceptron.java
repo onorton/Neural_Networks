@@ -2,6 +2,8 @@ package neuralnetwork;
 
 import java.util.Random;
 import java.lang.Math;
+
+import neuralnetwork.util.Activation;
 /**
  * 
  * Class for perception neuron
@@ -76,26 +78,9 @@ public class Perceptron implements Neuron {
 		}
 		
 		
-		return (step(sum - threshold));
+		return (Activation.step(sum - threshold));
 	}
 	
-	
-	/**
-	 * Calculates a value under the step function.
-	 * 
-	 * @param val The value to apply step function to.
-	 * 
-	 * @return
-	 * Value after the step function is applied.
-	 */
-	private int step(double val) {
-		if (val >= 0) {
-			return 1;
-		}
-		return 0;
-		
-	}
-
 	
 	/**
 	 * Trains the particular neuron.
@@ -109,7 +94,6 @@ public class Perceptron implements Neuron {
 			
 			for (int i = 0; i < combinations; i++) {
 				int e = data[i][2] - getOutput(data[i]);
-				System.out.println(e);
 				if (e != 0) {
 					error = true;
 				}
