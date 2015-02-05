@@ -11,7 +11,8 @@ public class Network implements Neuron {
 	private final double maxV = 2.4;
 	private HiddenLayer[] neurons;
 	private Perceptron outputL;
-	private int[][] data;
+
+	
 	
 	/**
 	 * Constructor for Network. Creates the neurons in the network (one at the moment).
@@ -22,9 +23,9 @@ public class Network implements Neuron {
 	 * @param data
 	 * The input-output combinations to train.
 	 */
-	public Network(int inputs, int [][] data) {
-		this.data = data;
-		outputL = new Perceptron(inputs, minV, maxV);
+	public Network(int inputs, double [][] data) {
+		
+		outputL = new Perceptron(inputs, minV, maxV, data);
 		neurons = new HiddenLayer[inputs];
 		for (int i = 0; i < neurons.length; i++)
 			neurons[i] = new HiddenLayer (inputs, minV, maxV, data, outputL);
@@ -51,13 +52,18 @@ public class Network implements Neuron {
 	 * @param input
 	 * The set of inputs to be entered into the network.
 	 */
-	@Override
-	public double getOutput(int[] input) {
-		return outputL.getOutput(input);
+	
+	public double getOutput(double[] input) {
+		double inputH[] = new double[input.length];
+		for (int i = 0; i < neurons.length; i++) {
+			inputH[i] = neurons[i].getOutput(input);
+		    System.out.println(inputH[i]);	
+		}
+		return outputL.getOutput(inputH);
 	}
 	
 
-	/**
+	/**(
 	 * Trains the network.
 	 * 
 	 * @param learningR
@@ -66,12 +72,13 @@ public class Network implements Neuron {
 	@Override
 	public double train(double learningR) {
 		double sumSqE = 1;
-		while(sumSqE >= 0) {
+		while(sumSqE >= 0.001) {
 			for (int i = 0; i < neurons.length; i++) {
-				sumSqE = neurons[i].train(learningR, data, i);
+				sumSqE = neurons[i].train(learningR, i);
 			}
-			System.out.println(sumSqE);
 			
+			System.out.println(sumSqE);
+		
 		}
 	    return sumSqE;
 	}

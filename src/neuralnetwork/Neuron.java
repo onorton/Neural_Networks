@@ -8,11 +8,9 @@ public interface Neuron {
 	
 	void printWeights();
 	
-	//double train(double learningR, int[][] data);
-
-	double getOutput(int[] input);
+	double train(double learningR);
 	
-	
+	double getOutput(double[] data);
 	
 
 }

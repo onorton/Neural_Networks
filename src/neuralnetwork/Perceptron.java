@@ -17,6 +17,7 @@ public class Perceptron implements Neuron {
 	protected int combinations;
 	protected Random r = new Random();
 	protected double inputData[][];
+	protected double data[][];
 	protected double errorGradient;
 	
 	 
@@ -35,9 +36,10 @@ public class Perceptron implements Neuron {
 	 * @param data The data that is to be trained on.
 	 */
 	public Perceptron(int inputs, double minV, 
-			           double maxV) {
+			           double maxV, double data[][]) {
 		
-
+		
+        this.data = data;
 		this.threshold = minV/inputs +  (maxV-minV)/inputs* r.nextDouble();
 		this.inputs = inputs;
 		this.combinations = (int)Math.pow((double)2, (double)inputs);
@@ -71,45 +73,48 @@ public class Perceptron implements Neuron {
 	 * @return
 	 * The value of the output
 	 */
-	@Override
-	public double getOutput(int[] input) {
+	
+	public double getOutput(double[] input) {
 		double sum = 0;
 		for (int i = 0; i < weights.length; i++) {
 			 sum += input[i]*weights[i];
 		}
 		
 		
-		return (Activation.step(sum - threshold));
+		return (Activation.sigmoid(sum - threshold));
 	}
 	
+
+	
+	public void setInputs(int i, int index, double b) {
+		inputData[i][index] = b;
+	}
 	/**
 	 * Trains the particular neuron.
 	 * 
 	 * @param learningR The learning rate of the network.
 	 */
 	
-	
-	public void setInputs(int input, int i, double b) {
-		inputData[input][i] = b;
-	}
-	
-	public double train(double learningR, int data[][]) {
+	public double train(double learningR) {
 	    double sumSqsE = 0;
 
 		for (int i = 0; i < combinations; i++) {
-			double output = getOutput(data[i]);
+			double output = getOutput(inputData[i]);
 			double e = data[i][2] - output;
 			sumSqsE += e*e;
 			errorGradient = output *(1-output) * e;
 				 
 				
 			for (int j = 0; j < inputs; j++) {
-				weights[j] += delta(learningR, output, errorGradient);
+				weights[j] += delta(learningR, inputData[i][j], errorGradient);
 			}
+			
+		    threshold += delta(learningR, -1, errorGradient);
+		
 				
 				
 		}
-		
+
 		return sumSqsE;
 	}
 
@@ -123,22 +128,20 @@ public class Perceptron implements Neuron {
 	/**
 	 * Calculates the change of the current weight. 
 	 * 
-	 * @param i
-	 * The index for the particular input-output combination.
-	 *  
-	 * @param j
-	 * The index for the particular weight.
-	 * 
-	 * @param e
-	 * The error of the output.
-	 * 
+	 *
 	 * @param learningR
 	 * The learning rate of the network.
+	 * 
+	 * @param output
+	 * The output of the previous hidden layer neurons
+	 * 
+	 * @param errorG
+	 * The error gradient of the output and error.e
 	 * 
 	 * @return
 	 * The value of the change to be applied to the weight.
 	 */
-	private double delta(double learningR, double output, double errorG) {
+	protected double delta(double learningR, double output, double errorG) {
 		return learningR * output * errorG;
 	}
 	

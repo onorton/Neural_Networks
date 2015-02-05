@@ -1,6 +1,5 @@
 package neuralnetwork;
 
-import neuralnetwork.util.Activation;
 
 
 /**
@@ -14,29 +13,26 @@ public class HiddenLayer extends Perceptron {
     private Perceptron outputL;
     
 	public HiddenLayer(int inputs, double minV, double maxV,
-			int[][] data, Perceptron outputL ) {
-		super(inputs, minV, maxV);
+			double[][] data, Perceptron outputL ) {
+		super(inputs, minV, maxV, data);
 		this.outputL = outputL;
 		}
 	
-	public double getOutput(int[] input) {
-		double sum = 0;
-		for (int i = 0; i < weights.length; i++) {
-			 sum += input[i]*weights[i];
-		}
-		
-		
-		return (Activation.step(sum - threshold));
-	}
-	
 
-	public double train(double learningR, int[][] data, int index) {
+
+	/**
+	 * 
+	 * @param learningR
+	 * @param index
+	 * @return
+	 */
+	public double train(double learningR, int index) {
 		
 		    double sumSqE = 0;
 	    	for (int i = 0; i < combinations; i++) {
 				double output = getOutput(data[i]);
 				outputL.setInputs(i, index, output);
-				sumSqE = outputL.train(learningR, data);
+				sumSqE = outputL.train(learningR);
 	    	}
 	    	
 	    	for (int i = 0; i < combinations; i++) {
@@ -48,6 +44,9 @@ public class HiddenLayer extends Perceptron {
 					weights[j] += delta(learningR, data[i][j], errorGradient);
 				}
 				
+				// threshold += delta(learningR, -1, errorGradient);
+
+				
 	    	}
 					
 					
@@ -55,8 +54,6 @@ public class HiddenLayer extends Perceptron {
 	    return sumSqE;
 	}
 	
-	private double delta(double learningR, int x, double errorG) {
-		return learningR * x * errorG;
-	}
+
 }
 

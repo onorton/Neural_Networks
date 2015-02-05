@@ -4,16 +4,21 @@ import java.util.Scanner;
 
 public class Main {
 	private static final int inputs = 2;
-	private static final int[][] and = {{0, 0, 0},
-		                                {0, 1, 0},
-		                                {1, 0, 0},
-		                                {1, 1, 1}};
+	private static final double[][] and = {{0, 0, 0},
+		                                   {0, 1, 0},
+		                                   {1, 0, 0},
+		                                   {1, 1, 1}};
 	
-	private static final int[][] or = {{0, 0, 0},
-		                               {0, 1, 1},
-		                               {1, 0, 1},
-		                               {1, 1, 1}};
-	private static final double learningR = 0.1;
+	private static final double[][] or = {{0, 0, 0},
+		                                 {0, 1, 1},
+		                                 {1, 0, 1},
+		                                 {1, 1, 1}};
+	
+	private static final double[][] xor = {{0, 0, 0},
+		                                   {0, 1, 1},
+		                                   {1, 0, 1},
+		                                   {1, 1, 0}};
+	private static final double learningR = 0.05;
 	
 	
 	
@@ -21,26 +26,27 @@ public class Main {
 		
 		Scanner sc = new Scanner(System.in);
 	    
-	    int[] userinputs = new int[2];
+	    double[] userinputs = new double[2];
 	    
 	    Network n;
 		
-	    System.out.println("Which operation would you like to train? (and/or)");
-		if (sc.next().equals("and")) {
-	    	  n = new Network(inputs, and);
-	    	 
-		}
-		else {
-			  n = new Network(inputs, or);
-			  
+	    System.out.println("Which operation would you like to train? (and/or/xor)");
+		String choice = sc.next();
+	    switch(choice) {
+	    case "and": n = new Network(inputs, and); break;
+	    case "or" : n = new Network(inputs, or); break;
+	    default: n = new Network(inputs, xor); break;
 		}
 		
+        userinputs[0] = 1;
+        userinputs[1] = 1;
+		System.out.println(n.getOutput(userinputs));
 		n.train(learningR);
 		
 		
 		System.out.println("Please enter two inputs");
-		userinputs[0] = sc.nextInt();
-		userinputs[1] = sc.nextInt();
+		userinputs[0] = sc.nextDouble();
+		userinputs[1] = sc.nextDouble();
 		sc.close();
 		
 		System.out.println("Result is: " + n.getOutput(userinputs));
