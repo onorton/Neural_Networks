@@ -26,14 +26,17 @@ public class Main {
 	    Network n;
 		
 	    System.out.println("Which operation would you like to train? (and/or)");
-		if (sc.next().equals("and"))
+		if (sc.next().equals("and")) {
 	    	  n = new Network(inputs, and);
-		else
+	    	 
+		}
+		else {
 			  n = new Network(inputs, or);
+			  
+		}
 		
-		
-	    
 		n.train(learningR);
+		
 		
 		System.out.println("Please enter two inputs");
 		userinputs[0] = sc.nextInt();

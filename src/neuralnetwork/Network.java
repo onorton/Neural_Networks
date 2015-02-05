@@ -7,9 +7,11 @@ package neuralnetwork;
  */
 public class Network implements Neuron {
 
-	private final double minV = -0.5;
-	private final double maxV = 0.5;
-	private Neuron[] neurons;
+	private final double minV = -2.4;
+	private final double maxV = 2.4;
+	private HiddenLayer[] neurons;
+	private Perceptron outputL;
+	private int[][] data;
 	
 	/**
 	 * Constructor for Network. Creates the neurons in the network (one at the moment).
@@ -21,10 +23,11 @@ public class Network implements Neuron {
 	 * The input-output combinations to train.
 	 */
 	public Network(int inputs, int [][] data) {
-		
-		neurons = new Neuron[1];
+		this.data = data;
+		outputL = new Perceptron(inputs, minV, maxV);
+		neurons = new HiddenLayer[inputs];
 		for (int i = 0; i < neurons.length; i++)
-			neurons[i] = new Perceptron(inputs, 0.2, minV, maxV, data);
+			neurons[i] = new HiddenLayer (inputs, minV, maxV, data, outputL);
 	}
 	
 	/**
@@ -32,9 +35,9 @@ public class Network implements Neuron {
 	 * Prints all of the weights in the network.
 	 */
 	@Override
-	public void getWeights() {
+	public void printWeights() {
 		for (Neuron n : neurons) {
-			n.getWeights();
+			n.printWeights();
 			System.out.println();
 			
 		}
@@ -49,8 +52,8 @@ public class Network implements Neuron {
 	 * The set of inputs to be entered into the network.
 	 */
 	@Override
-	public int getOutput(int[] input) {
-		return neurons[0].getOutput(input);
+	public double getOutput(int[] input) {
+		return outputL.getOutput(input);
 	}
 	
 
@@ -61,11 +64,17 @@ public class Network implements Neuron {
 	 * The learning rate of the network.
 	 */
 	@Override
-	public void train(double learningR) {
-		neurons[0].train(learningR);
-		getWeights();
+	public double train(double learningR) {
+		double sumSqE = 1;
+		while(sumSqE >= 0) {
+			for (int i = 0; i < neurons.length; i++) {
+				sumSqE = neurons[i].train(learningR, data, i);
+			}
+			System.out.println(sumSqE);
+			
+		}
+	    return sumSqE;
 	}
-
 	
 	
 }

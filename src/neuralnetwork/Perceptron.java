@@ -11,12 +11,13 @@ import neuralnetwork.util.Activation;
  */
 public class Perceptron implements Neuron {
 
-	private double[] weights;
-	private double threshold;
-	private int inputs;
-	private int combinations;
-	private int[][] data;
-	private Random r = new Random();
+	protected double[] weights;
+	protected double threshold;
+	protected int inputs;
+	protected int combinations;
+	protected Random r = new Random();
+	protected double inputData[][];
+	protected double errorGradient;
 	
 	 
 	 // NB: Overload constructor when reading from hidden layer
@@ -33,17 +34,17 @@ public class Perceptron implements Neuron {
 	 * 
 	 * @param data The data that is to be trained on.
 	 */
-	public Perceptron(int inputs, double threshold, 
-			          double minV, double maxV, int[][] data) {
+	public Perceptron(int inputs, double minV, 
+			           double maxV) {
+		
 
-		this.threshold = threshold;
+		this.threshold = minV/inputs +  (maxV-minV)/inputs* r.nextDouble();
 		this.inputs = inputs;
 		this.combinations = (int)Math.pow((double)2, (double)inputs);
-		this.data = data;
-		
+        inputData = new double[4][inputs];
 		weights = new double[inputs];
 		for (int i = 0; i < weights.length; i++) {
-			weights[i] = minV +  (maxV-minV)* r.nextDouble();
+			weights[i] = minV/inputs +  (maxV-minV)/inputs* r.nextDouble();
 		}
 		
 	}
@@ -53,7 +54,7 @@ public class Perceptron implements Neuron {
 	 * 
 	 */
 	@Override
-	public void getWeights() {
+	public void printWeights() {
 		for (int i = 0; i < weights.length; i++) {
 			System.out.println("w" + i + ": " + weights[i]);
 		}
@@ -71,7 +72,7 @@ public class Perceptron implements Neuron {
 	 * The value of the output
 	 */
 	@Override
-	public int getOutput(int[] input) {
+	public double getOutput(int[] input) {
 		double sum = 0;
 		for (int i = 0; i < weights.length; i++) {
 			 sum += input[i]*weights[i];
@@ -81,30 +82,42 @@ public class Perceptron implements Neuron {
 		return (Activation.step(sum - threshold));
 	}
 	
-	
 	/**
 	 * Trains the particular neuron.
 	 * 
 	 * @param learningR The learning rate of the network.
 	 */
-	public void train(double learningR) {
-		boolean error = true;
-		while (error) {
-			error = false;
-			
-			for (int i = 0; i < combinations; i++) {
-				int e = data[i][2] - getOutput(data[i]);
-				if (e != 0) {
-					error = true;
-				}
+	
+	
+	public void setInputs(int input, int i, double b) {
+		inputData[input][i] = b;
+	}
+	
+	public double train(double learningR, int data[][]) {
+	    double sumSqsE = 0;
+
+		for (int i = 0; i < combinations; i++) {
+			double output = getOutput(data[i]);
+			double e = data[i][2] - output;
+			sumSqsE += e*e;
+			errorGradient = output *(1-output) * e;
+				 
 				
-				for (int j = 0; j < inputs; j++) {
-					weights[j] += delta(i, j, e, learningR);
-				}
-				
-				
+			for (int j = 0; j < inputs; j++) {
+				weights[j] += delta(learningR, output, errorGradient);
 			}
+				
+				
 		}
+		
+		return sumSqsE;
+	}
+
+	public double[] getWeights() {
+		return weights;
+	}
+	public double getErrorGradient() {
+		return errorGradient;
 	}
 	
 	/**
@@ -125,8 +138,8 @@ public class Perceptron implements Neuron {
 	 * @return
 	 * The value of the change to be applied to the weight.
 	 */
-	private double delta(int i, int j, int e, double learningR) {
-		return learningR * data[i][j] * e;
+	private double delta(double learningR, double output, double errorG) {
+		return learningR * output * errorG;
 	}
 	
 	

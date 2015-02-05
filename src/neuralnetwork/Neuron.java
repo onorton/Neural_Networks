@@ -6,11 +6,11 @@ package neuralnetwork;
  */
 public interface Neuron {
 	
-	void getWeights();
+	void printWeights();
 	
-	void train(double learningR);
+	//double train(double learningR, int[][] data);
 
-	int getOutput(int[] input);
+	double getOutput(int[] input);
 	
 	
 	
