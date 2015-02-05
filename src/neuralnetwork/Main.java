@@ -18,7 +18,7 @@ public class Main {
 		                                   {0, 1, 1},
 		                                   {1, 0, 1},
 		                                   {1, 1, 0}};
-	private static final double learningR = 0.05;
+	private static final double learningR = 0.8;
 	
 	
 	
@@ -38,9 +38,6 @@ public class Main {
 	    default: n = new Network(inputs, xor); break;
 		}
 		
-        userinputs[0] = 1;
-        userinputs[1] = 1;
-		System.out.println(n.getOutput(userinputs));
 		n.train(learningR);
 		
 		

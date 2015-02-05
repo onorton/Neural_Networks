@@ -100,6 +100,7 @@ public class Perceptron implements Neuron {
 
 		for (int i = 0; i < combinations; i++) {
 			double output = getOutput(inputData[i]);
+
 			double e = data[i][2] - output;
 			sumSqsE += e*e;
 			errorGradient = output *(1-output) * e;
@@ -123,6 +124,10 @@ public class Perceptron implements Neuron {
 	}
 	public double getErrorGradient() {
 		return errorGradient;
+	}
+	
+	public double[] getInputData(int i){
+		return inputData[i];
 	}
 	
 	/**

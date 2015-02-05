@@ -1,5 +1,6 @@
 package neuralnetwork;
 
+import java.lang.Math;
 /**
  * 
  * The class for the network.
@@ -11,6 +12,8 @@ public class Network implements Neuron {
 	private final double maxV = 2.4;
 	private HiddenLayer[] neurons;
 	private Perceptron outputL;
+	private double[][] data;
+	private int inputs;
 
 	
 	
@@ -24,7 +27,8 @@ public class Network implements Neuron {
 	 * The input-output combinations to train.
 	 */
 	public Network(int inputs, double [][] data) {
-		
+		this.inputs = inputs;
+		this.data = data;
 		outputL = new Perceptron(inputs, minV, maxV, data);
 		neurons = new HiddenLayer[inputs];
 		for (int i = 0; i < neurons.length; i++)
@@ -53,14 +57,24 @@ public class Network implements Neuron {
 	 * The set of inputs to be entered into the network.
 	 */
 	
+	public double getOutput(double[] input, int i) {
+		for (int index = 0; index < neurons.length; index++) {
+			 outputL.setInputs(i, index, neurons[index].getOutput(input));	
+		}
+		return outputL.getOutput(outputL.getInputData(i));
+	}
+	
+	/**
+	 * This outputs data supplied by user after training.
+	 */
 	public double getOutput(double[] input) {
 		double inputH[] = new double[input.length];
-		for (int i = 0; i < neurons.length; i++) {
-			inputH[i] = neurons[i].getOutput(input);
-		    System.out.println(inputH[i]);	
+		for (int index = 0; index < neurons.length; index++) {
+			 inputH[index] = neurons[index].getOutput(input);
 		}
 		return outputL.getOutput(inputH);
 	}
+	
 	
 
 	/**(
@@ -72,13 +86,10 @@ public class Network implements Neuron {
 	@Override
 	public double train(double learningR) {
 		double sumSqE = 1;
-		while(sumSqE >= 0.001) {
-			for (int i = 0; i < neurons.length; i++) {
-				sumSqE = neurons[i].train(learningR, i);
+	    while(sumSqE >= 0.001) {
+			for (int i = 0; i < (int)Math.pow(2, inputs); i++) {
+				System.out.println(getOutput(data[i], i));
 			}
-			
-			System.out.println(sumSqE);
-		
 		}
 	    return sumSqE;
 	}

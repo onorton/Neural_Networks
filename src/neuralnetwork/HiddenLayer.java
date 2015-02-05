@@ -21,13 +21,17 @@ public class HiddenLayer extends Perceptron {
 
 
 	/**
+	 * Consider splitting to calculate outputs then training separately.
+	 * 
 	 * 
 	 * @param learningR
 	 * @param index
 	 * @return
 	 */
 	public double train(double learningR, int index) {
-		
+		    /**
+		     * outputL.train(learningR);
+		     */
 		    double sumSqE = 0;
 	    	for (int i = 0; i < combinations; i++) {
 				double output = getOutput(data[i]);
