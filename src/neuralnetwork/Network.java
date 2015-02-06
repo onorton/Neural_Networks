@@ -8,8 +8,8 @@ import java.lang.Math;
  */
 public class Network implements Neuron {
 
-	private final double minV = -2;
-	private final double maxV = 2;
+	private final double minV = -2.4;
+	private final double maxV = 2.4;
 	private HiddenLayer[] neurons;
 	private Perceptron outputL;
 	private double[][] data;
@@ -93,24 +93,25 @@ public class Network implements Neuron {
 	@Override
 	public double train(double learningR, int k) {
 		double sumSqE = 1;
-	  //  while(sumSqE >= 0.001) {
+
+	    while(sumSqE >= 0.001) {
+	    	sumSqE = 0;
 			for (int i = 0; i < (int)Math.pow(2, inputs); i++) {
 				//Calculate the output for the initial values
 			     getOutput(data[i], i);
 				
 			
 			    //Adjust weights for output layer
-		        sumSqE = outputL.train(learningR, i);
-		    
+		        sumSqE += outputL.train(learningR, i);
+		         
 		        //Adjust weights for hidden layer
 		        for (int j = 0; j < neurons.length; j++) {
 		    	    neurons[j].train(learningR, j, i);
 		        }
-		        
-		    // System.out.println(sumSqE);
-		    
+		        		        
 			}
-		//}
+
+		}
 	    return sumSqE;
 	}
 	

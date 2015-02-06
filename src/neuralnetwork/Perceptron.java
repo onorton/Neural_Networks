@@ -45,7 +45,7 @@ public class Perceptron implements Neuron {
         this.intermediateData = new double[4][inputs+1];
 		this.weights = new double[inputs];
 		for (int i = 0; i < weights.length; i++) {
-			weights[i] = minV/inputs +  (maxV-minV)/inputs* r.nextDouble();
+			weights[i] = minV/inputs + (maxV-minV)/inputs* r.nextDouble();
 		}
 		
 	}
@@ -107,6 +107,9 @@ public class Perceptron implements Neuron {
 	 * @param learningR 
 	 * The learning rate of the network.
 	 * 
+	 * @param i
+	 * The index of the particular input-output combination.
+	 * 
 	 * @return
 	 * The sum of squared error for this particular input-output combination.
 	 */
@@ -116,14 +119,12 @@ public class Perceptron implements Neuron {
    
 	
         double output = intermediateData[i][2];
-        System.out.println(output);
         
 		double e = data[i][2] - output;
-
 		sumSqsE += e*e;
 		
 		//Calculate error gradient
-		errorGradient = output *(1-output) * e;
+		errorGradient = output * (1-output) * e;
 			
 				
 		//Adjust weights

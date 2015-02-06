@@ -30,11 +30,14 @@ public class HiddenLayer extends Perceptron {
 	 * 
 	 * @param index
 	 * The index of the particular neuron. (Used for passing output values to output layer).
+	 * 
+	 * @param i
+	 * The index of the particular input-output combination.
 	 *  
 	 */
 	public void train(double learningR, int index, int i){
 		    
-		double output = outputL.getIntermediateData(i)[2];
+		double output = outputL.getIntermediateData(i)[index];
 		errorGradient = output *(1-output) * outputL.getErrorGradient() * outputL.getWeights()[index];
 				 
 				

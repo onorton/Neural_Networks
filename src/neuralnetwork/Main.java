@@ -9,6 +9,7 @@ public class Main {
 		                                   {1, 0, 0},
 		                                   {1, 1, 1}};
 	
+	
 	private static final double[][] or = {{0, 0, 0},
 		                                 {0, 1, 1},
 		                                 {1, 0, 1},
@@ -46,7 +47,7 @@ public class Main {
 		userinputs[1] = sc.nextDouble();
 		sc.close();
 		
-		System.out.println("Result is: " + n.getOutput(userinputs));
+		System.out.println("Result is: " + (n.getOutput(userinputs) >= 0.5 ? 1 : 0));
 		
 	}
 }
