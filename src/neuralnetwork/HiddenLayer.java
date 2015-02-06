@@ -22,41 +22,31 @@ public class HiddenLayer extends Perceptron {
 
 	/**
 	 * Consider splitting to calculate outputs then training separately.
+	 * Adjust weights for particular neuron.
 	 * 
 	 * 
 	 * @param learningR
+	 * The learning rate for training.
+	 * 
 	 * @param index
-	 * @return
+	 * The index of the particular neuron. (Used for passing output values to output layer).
+	 *  
 	 */
-	public double train(double learningR, int index) {
-		    /**
-		     * outputL.train(learningR);
-		     */
-		    double sumSqE = 0;
-	    	for (int i = 0; i < combinations; i++) {
-				double output = getOutput(data[i]);
-				outputL.setInputs(i, index, output);
-				sumSqE = outputL.train(learningR);
-	    	}
-	    	
-	    	for (int i = 0; i < combinations; i++) {
-	    		double output = getOutput(data[i]);
-				errorGradient = output *(1-output) * outputL.getWeights()[index] ;
-					 
+	public void train(double learningR, int index, int i){
+		    
+		double output = outputL.getIntermediateData(i)[2];
+		errorGradient = output *(1-output) * outputL.getErrorGradient() * outputL.getWeights()[index];
+				 
 				
-				for (int j = 0; j < inputs; j++) {
-					weights[j] += delta(learningR, data[i][j], errorGradient);
-				}
+		for (int j = 0; j < inputs; j++) {
+			weights[j] += delta(learningR, data[i][j], errorGradient);
+		}
+			
+		threshold += delta(learningR, -1, errorGradient);
+			
 				
-				// threshold += delta(learningR, -1, errorGradient);
-
-				
-	    	}
-					
-					
-		
-	    return sumSqE;
 	}
+		
 	
 
 }

@@ -18,7 +18,7 @@ public class Main {
 		                                   {0, 1, 1},
 		                                   {1, 0, 1},
 		                                   {1, 1, 0}};
-	private static final double learningR = 0.8;
+	private static final double learningR = 0.1;
 	
 	
 	
@@ -38,7 +38,7 @@ public class Main {
 	    default: n = new Network(inputs, xor); break;
 		}
 		
-		n.train(learningR);
+		n.train(learningR, 0);
 		
 		
 		System.out.println("Please enter two inputs");

@@ -16,12 +16,11 @@ public class Perceptron implements Neuron {
 	protected int inputs;
 	protected int combinations;
 	protected Random r = new Random();
-	protected double inputData[][];
+	protected double intermediateData[][];
 	protected double data[][];
 	protected double errorGradient;
 	
 	 
-	 // NB: Overload constructor when reading from hidden layer
 	 /** 
 	 * Constructor for Perceptron 
 	 * 
@@ -43,8 +42,8 @@ public class Perceptron implements Neuron {
 		this.threshold = minV/inputs +  (maxV-minV)/inputs* r.nextDouble();
 		this.inputs = inputs;
 		this.combinations = (int)Math.pow((double)2, (double)inputs);
-        inputData = new double[4][inputs];
-		weights = new double[inputs];
+        this.intermediateData = new double[4][inputs+1];
+		this.weights = new double[inputs];
 		for (int i = 0; i < weights.length; i++) {
 			weights[i] = minV/inputs +  (maxV-minV)/inputs* r.nextDouble();
 		}
@@ -73,7 +72,7 @@ public class Perceptron implements Neuron {
 	 * @return
 	 * The value of the output
 	 */
-	
+	@Override
 	public double getOutput(double[] input) {
 		double sum = 0;
 		for (int i = 0; i < weights.length; i++) {
@@ -85,49 +84,93 @@ public class Perceptron implements Neuron {
 	}
 	
 
-	
-	public void setInputs(int i, int index, double b) {
-		inputData[i][index] = b;
+	/**
+	 * Used for setting the inputs from the hidden layer.
+	 * 
+	 * @param i
+	 * The particular input-output combination.
+	 * 
+	 * @param index
+	 * The index of the particular input/hidden layer neuron.
+	 * 
+	 * @param value
+	 * The value to be assigned to.
+	 */
+	public void setInputs(int i, int index, double value) {
+		intermediateData[i][index] = value;
 	}
+	
+	
 	/**
 	 * Trains the particular neuron.
 	 * 
-	 * @param learningR The learning rate of the network.
+	 * @param learningR 
+	 * The learning rate of the network.
+	 * 
+	 * @return
+	 * The sum of squared error for this particular input-output combination.
 	 */
-	
-	public double train(double learningR) {
+	@Override
+	public double train(double learningR, int i) {
 	    double sumSqsE = 0;
+   
+	
+        double output = intermediateData[i][2];
+        System.out.println(output);
+        
+		double e = data[i][2] - output;
 
-		for (int i = 0; i < combinations; i++) {
-			double output = getOutput(inputData[i]);
-
-			double e = data[i][2] - output;
-			sumSqsE += e*e;
-			errorGradient = output *(1-output) * e;
-				 
-				
-			for (int j = 0; j < inputs; j++) {
-				weights[j] += delta(learningR, inputData[i][j], errorGradient);
-			}
-			
-		    threshold += delta(learningR, -1, errorGradient);
+		sumSqsE += e*e;
 		
+		//Calculate error gradient
+		errorGradient = output *(1-output) * e;
+			
 				
-				
+		//Adjust weights
+		for (int j = 0; j < inputs; j++) {
+		
+			weights[j] += delta(learningR, intermediateData[i][j], errorGradient);
+			
 		}
+			
+		threshold += delta(learningR, -1, errorGradient);
+			
+		
 
 		return sumSqsE;
 	}
 
+	
+	/**
+	 * Allows the passing of the weights for this neuron to the hidden layer.
+	 * 
+	 * @return
+	 * The weights for this neuron.
+	 */
 	public double[] getWeights() {
 		return weights;
 	}
+	
+	/**
+	 * Allows the passing of the error gradient to the hidden layer.
+	 * 
+	 * @return 
+	 * The value of the error gradient for the particular epoch.
+	 */
 	public double getErrorGradient() {
 		return errorGradient;
 	}
 	
-	public double[] getInputData(int i){
-		return inputData[i];
+	/**
+	 * 
+	 * @param i
+	 * The particular combination of inputs and outputs in the training set.
+	 * 
+	 * @return 
+	 * The input data from combination i.
+	 */
+	public double[] getIntermediateData(int i){
+		return intermediateData[i];
 	}
 	
 	/**
